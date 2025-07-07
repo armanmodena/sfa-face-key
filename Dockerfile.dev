@@ -1,0 +1,54 @@
+FROM ubuntu:20.04
+
+WORKDIR /app
+
+ENV TZ=Asia/Jakarta
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install base tools (NO jpeg-dev yet!)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    tzdata \
+    ca-certificates \
+    wget curl git build-essential cmake \
+    libopenblas-dev liblapack-dev libx11-dev \
+    libgtk-3-dev libboost-python-dev libatlas-base-dev \
+    pkg-config && \
+    update-ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
+# --- Build & install libjpeg v8 ---
+RUN wget http://www.ijg.org/files/jpegsrc.v8d.tar.gz && \
+    tar -xvzf jpegsrc.v8d.tar.gz && \
+    cd jpeg-8d && \
+    ./configure --prefix=/usr/local --enable-shared && \
+    make && make install && \
+    cd .. && rm -rf jpegsrc.v8d.tar.gz jpeg-8d
+
+# --- Make sure correct libjpeg is used ---
+ENV LD_LIBRARY_PATH=/usr/local/lib
+RUN ldconfig
+
+# --- Build dlib from source ---
+RUN git config --global http.sslVerify false && \
+    git clone https://github.com/davisking/dlib.git && \
+    cd dlib && mkdir build && cd build && \
+    cmake .. && cmake --build . && make install && \
+    ldconfig && cd ../.. && rm -rf dlib
+
+# Set CGO env
+ENV CGO_LDFLAGS="-L/usr/local/lib -ldlib -lblas -lcblas -llapack -ljpeg"
+ENV CGO_CXXFLAGS="--std=c++14"
+
+# Copy your app binary (make sure it was built with CGO_ENABLED=1!)
+COPY ./arkan-face-key-dev .
+COPY .env.dev .env
+
+# Ensure executable
+RUN chmod +x /app/arkan-face-key-dev
+
+# Assets
+COPY ./faces /app/faces
+RUN mkdir /app/tmp_file
+
+EXPOSE 9000
+CMD ["./arkan-face-key-dev"]
