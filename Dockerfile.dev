@@ -40,15 +40,15 @@ ENV CGO_LDFLAGS="-L/usr/local/lib -ldlib -lblas -lcblas -llapack -ljpeg"
 ENV CGO_CXXFLAGS="--std=c++14"
 
 # Copy your app binary (make sure it was built with CGO_ENABLED=1!)
-COPY ./arkan-face-key-dev .
+COPY ./sfa-face-key-dev .
 COPY .env.dev .env
 
 # Ensure executable
-RUN chmod +x /app/arkan-face-key-dev
+RUN chmod +x /app/sfa-face-key-dev
 
 # Assets
 COPY ./faces /app/faces
 RUN mkdir /app/tmp_file
 
-EXPOSE 9000
-CMD ["./arkan-face-key-dev"]
+EXPOSE 9050
+CMD ["./sfa-face-key-dev"]
