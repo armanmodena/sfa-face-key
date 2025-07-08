@@ -44,7 +44,7 @@ func init() {
 		log.Fatalf("Error loading .env file")
 	}
 
-	PORT = GetEnv("PORT", "9000")
+	PORT = GetEnv("SERVER_PORT", "9000")
 	SECURITY_CODE = GetEnv("SECURITY_CODE", "")
 
 	DB_HOST = GetEnv("DB_HOST", "localhost")
@@ -62,8 +62,8 @@ func init() {
 	SFTP_HOST = GetEnv("SFTP_HOST", "localhost")
 	SFTP_USERNAME = GetEnv("SFTP_USERNAME", "admin")
 	SFTP_PASSWORD = GetEnv("SFTP_PASSWORD", "admin")
-	SFTP_PORT = GetEnv("SFTP_PORT", "22")
-	SFTP_ROOT = GetEnv("SFTP_ROOT", "/upload/arkan/")
+	SFTP_PORT = GetEnv("SFTP_PORT", "221")
+	SFTP_ROOT = GetEnv("SFTP_ROOT", "/upload/sfa_mobile/")
 }
 
 func InitTimeZone() error {

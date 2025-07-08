@@ -77,7 +77,7 @@ func (s *faceRecognitionService) SaveUserFaceKey(r *gin.Context, image *multipar
 	if err != nil {
 		return nil, &helper.Response{
 			Status:  400,
-			Message: fmt.Sprintf("Error reading uploaded image: %v", err),
+			Message: fmt.Sprintf("Error reading file byte uploaded image: %v", err),
 		}
 	}
 
@@ -94,7 +94,7 @@ func (s *faceRecognitionService) SaveUserFaceKey(r *gin.Context, image *multipar
 	if len(refFace) == 0 {
 		return nil, &helper.Response{
 			Status:  400,
-			Message: "no_faces_found",
+			Message: "No faces found in the image",
 		}
 	}
 
@@ -161,7 +161,7 @@ func (s *faceRecognitionService) SaveUserFaceKey(r *gin.Context, image *multipar
 
 	return &helper.Response{
 		Status:  200,
-		Message: "face_key_saved_successfully",
+		Message: "Face key saved successfully",
 		Data: map[string]any{
 			"user_id":            user.Id,
 			"face_key_file":      faceKeyFileName,
@@ -175,7 +175,7 @@ func (s *faceRecognitionService) ValidateWithEmbedding(r *gin.Context, image *mu
 	if username == "" {
 		return nil, &helper.Response{
 			Status:  400,
-			Message: "invalid_username",
+			Message: "Invalid Username",
 		}
 	}
 
